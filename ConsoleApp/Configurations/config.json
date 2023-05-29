@@ -4,7 +4,7 @@
     "Greetings": {
         "Value": "Hello",
         "Targets": {
-            "From": "Tom",
+            "from": "Tom",
             "To": "Eric"
         }
     },

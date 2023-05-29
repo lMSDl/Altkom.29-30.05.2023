@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using ConsoleApp.Configurations.Models;
+using Microsoft.Extensions.Configuration;
 using System;
 
 
@@ -12,16 +13,29 @@ var configuration = new ConfigurationBuilder()
     .AddXmlFile("Configurations/config.xml", optional: true)
     //NetEscapades.Configuration.Yaml
     .AddYamlFile("Configurations/config.yaml", optional: true)
+    .AddEnvironmentVariables()
     .Build();
 
+Console.WriteLine(configuration["myvalue"]);
+
 var greetingsSection = configuration.GetSection("Greetings");
-for (int i = 0; i < int.Parse(configuration["Number"]); i++)
+for (int i = 0; i < configuration.GetValue<int>("Number"); i++)
 {
     Console.WriteLine($"{greetingsSection["Value"]} from {configuration["Greetings:Targets:From"]} to {greetingsSection.GetSection("Targets")["To"]}");
 }
 
+var greetings = new Greetings();
+greetingsSection.Bind(greetings);
 
-    for (int i = 0; i < int.Parse(configuration["Number"]); i++)
+Console.WriteLine($"{greetings.Value} from {greetings.Targets.From} to {greetings.Targets.To}");
+
+greetings = configuration.GetSection(nameof(Greetings)).Get<Greetings>();
+Console.WriteLine($"{greetings.Value} from {greetings.Targets.From} to {greetings.Targets.To}");
+
+
+
+
+for (int i = 0; i < int.Parse(configuration["Number"]); i++)
 {
     Console.WriteLine($"Hello from {configuration["Hello"]}");
 

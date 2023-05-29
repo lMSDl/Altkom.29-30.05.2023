@@ -4,5 +4,5 @@ HelloYaml: yaml
 Greetings:
  Value: Bye
  Targets:
-  From: Peter
+  from: Peter
   To: Albert
