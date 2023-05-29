@@ -6,15 +6,22 @@ using System;
 var configuration = new ConfigurationBuilder()
     //Microsoft.Extensions.Configuration.Json
     .AddJsonFile("Configurations/config.json")
-    //Microsoft.Extensions.Configuration.Xml
-    .AddXmlFile("Configurations/config.xml", optional: true)
     //Microsoft.Extensions.Configuration.Ini
     .AddIniFile("Configurations/config.ini", optional: false, reloadOnChange: true)
+    //Microsoft.Extensions.Configuration.Xml
+    .AddXmlFile("Configurations/config.xml", optional: true)
     //NetEscapades.Configuration.Yaml
     .AddYamlFile("Configurations/config.yaml", optional: true)
     .Build();
 
-for(int i = 0; i < int.Parse(configuration["Number"]); i++)
+var greetingsSection = configuration.GetSection("Greetings");
+for (int i = 0; i < int.Parse(configuration["Number"]); i++)
+{
+    Console.WriteLine($"{greetingsSection["Value"]} from {configuration["Greetings:Targets:From"]} to {greetingsSection.GetSection("Targets")["To"]}");
+}
+
+
+    for (int i = 0; i < int.Parse(configuration["Number"]); i++)
 {
     Console.WriteLine($"Hello from {configuration["Hello"]}");
 

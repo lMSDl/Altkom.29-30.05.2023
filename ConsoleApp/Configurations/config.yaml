@@ -1,2 +1,8 @@
 Hello: yaml
 HelloYaml: yaml
+
+Greetings:
+ Value: Bye
+ Targets:
+  From: Peter
+  To: Albert
