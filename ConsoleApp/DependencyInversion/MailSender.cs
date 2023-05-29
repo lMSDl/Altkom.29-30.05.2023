@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp.DependencyInversion
+{
+    internal class MailSender : IMessage
+    {
+        public string Address { get; set; }
+        public string Subject { get; set; }
+        public string Message { get; set; }
+        public byte[] Attachements { get; set; }
+
+        public void Send()
+        {
+            SendMail();
+        }
+
+        public void SendMail()
+        {
+            Console.WriteLine("Sending mail...");
+        }
+    }
+}

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp.Configurations.Models
 {
-    internal class Greetings
+    public class Greetings
     {
         public string Value { get; set; }
         public Targets Targets { get; set; }
