@@ -1,31 +1,61 @@
-﻿using System;
-
-//namespace ConsoleApp
-//{
-//    internal class Program
-//    {
-//        static void Main(string[] args)
-//        {
-
-//Instrukcja najwyższego poziomu
+﻿using Microsoft.Extensions.Configuration;
+using System;
 
 
-Console.WriteLine($"Hello, {args[0]}!");
-JsonConvert.SerializeObject(new object());
+//Microsoft.Extensions.Configuration
+var configuration = new ConfigurationBuilder()
+    //Microsoft.Extensions.Configuration.Json
+    .AddJsonFile("Configurations/config.json")
+    //Microsoft.Extensions.Configuration.Xml
+    .AddXmlFile("Configurations/config.xml", optional: true)
+    //Microsoft.Extensions.Configuration.Ini
+    .AddIniFile("Configurations/config.ini", optional: false, reloadOnChange: true)
+    //NetEscapades.Configuration.Yaml
+    .AddYamlFile("Configurations/config.yaml", optional: true)
+    .Build();
 
-string? name = "ALA";
-string result = ToLower(name)!; // ! - uspokaja warningi przy niezgodności typu NULL z nieNULL
-
-string? ToLower(string? value /*!! - parameter null-checking feature - automatycznie dodaje kod jak poniżej*/)
+for(int i = 0; i < int.Parse(configuration["Number"]); i++)
 {
-    /*if(value == null)
-        throw new ArgumentNullException("value");*/
+    Console.WriteLine($"Hello from {configuration["Hello"]}");
 
-    return value?.ToLower();
+    Console.WriteLine($"Hello from {configuration["HelloJson"]}");
+    Console.WriteLine($"Hello from {configuration["HelloYaml"]}");
+    Console.WriteLine($"Hello from {configuration["HelloIni"]}");
+    Console.WriteLine($"Hello from {configuration["HelloXml"]}");
+
+    Console.ReadLine();
 }
 
 
+static void dotNet6(string[] args)
+{
+    //namespace ConsoleApp
+    //{
+    //    internal class Program
+    //    {
+    //        static void Main(string[] args)
+    //        {
 
-//        }
-//    }
-//}
+    //Instrukcja najwyższego poziomu
+
+
+    Console.WriteLine($"Hello, {args[0]}!");
+    JsonConvert.SerializeObject(new object());
+
+    string? name = "ALA";
+    string result = ToLower(name)!; // ! - uspokaja warningi przy niezgodności typu NULL z nieNULL
+
+    string? ToLower(string? value /*!! - parameter null-checking feature - automatycznie dodaje kod jak poniżej*/)
+    {
+        /*if(value == null)
+            throw new ArgumentNullException("value");*/
+
+        return value?.ToLower();
+    }
+
+
+
+    //        }
+    //    }
+    //}
+}

@@ -1,0 +1,4 @@
+<config>
+    <Hello>xml</Hello>
+	<HelloXml>xml</HelloXml>
+</config>
