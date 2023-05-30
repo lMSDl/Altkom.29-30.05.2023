@@ -1,42 +1,32 @@
+using WebApp.Middleware;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddTransient<object>();
+builder.Services.AddTransient<Use1Middleware>();
+builder.Services.AddTransient<MapRunMiddleware>();
 
 
 var app = builder.Build();
 
 
-app.Use(async (context, next) =>
-{
-    Console.WriteLine("USE 1 IN");
-    await next();
-    Console.WriteLine("USE 1 OUT");
-});
-
+app.UseMiddleware<Use1Middleware>();
 
 app.Map("/map", mapApp =>
 {
-    mapApp.Use(async (context, next) =>
+    if (app.Environment.IsDevelopment())
     {
-        Console.WriteLine("MAP USE 1 IN");
-        await next();
-        Console.WriteLine("MAP USE 1 OUT");
-    });
+        mapApp.Use(async (context, next) =>
+        {
+            Console.WriteLine("MAP USE 1 IN");
+            await next();
+            Console.WriteLine("MAP USE 1 OUT");
+        });
+    }
 
-    mapApp.Run(async (context) =>
-    {
-        Console.WriteLine("MAP RUN");
-        await context.Response.WriteAsync("Hello FROM MAP!");
-    });
+    mapApp.MapRun();
 });
 
-
-app.Use(async (context, next) =>
-{
-    Console.WriteLine("USE 2 IN");
-    await next();
-    Console.WriteLine("USE 2 OUT");
-});
+app.Use2();
 
 app.MapWhen(context => context.Request.Query.TryGetValue("name", out _), mapWhenApp =>
 {
@@ -47,11 +37,7 @@ app.MapWhen(context => context.Request.Query.TryGetValue("name", out _), mapWhen
 
 });
 
-app.Run(async (context) =>
-{
-    Console.WriteLine("RUN");
-    await context.Response.WriteAsync("Hello world!");
-});
+app.UseMiddleware<RunMiddleware>();
 
 
 app.Use(async (context, next) =>
