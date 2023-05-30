@@ -1,8 +1,10 @@
-﻿using ConsoleApp.Configurations;
+﻿using ConsoleApp;
+using ConsoleApp.Configurations;
 using ConsoleApp.Configurations.Models;
 using ConsoleApp.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 
 
@@ -23,33 +25,33 @@ serviceCollection.AddSingleton<IFontService, Larry3dFontService>();
 serviceCollection.AddScoped<IOutputService, RandomFontConsoleService>();
 
 serviceCollection.AddSingleton<Greetings>(provider => provider.GetService<IConfiguration>()!.GetSection(nameof(Greetings)).Get<Greetings>());
-serviceCollection.AddSingleton<IConfiguration>(provider => new ConfigurationBuilder()
-                                                                    .AddJsonFile("Configurations/config.json")
-                                                                    .Build());
+var config = new ConfigurationBuilder().AddJsonFile("Configurations/config.json")
+                                                                    .Build();
+serviceCollection.AddSingleton<IConfiguration>(provider => config);
+
+serviceCollection.AddLogging(options =>
+    options.AddConfiguration(config.GetSection("Logging"))
+    //.SetMinimumLevel(LogLevel.Debug)
+    .AddConsole()
+    .AddDebug()
+    .AddEventLog()
+);
+serviceCollection.AddTransient<LoggerDemo>();
 
 IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
 
-IOutputService? outputService = serviceProvider.GetService<IOutputService>();
-//outputService = serviceProvider.GetRequiredService<IOutputService>();
-outputService?.WriteLine("ala ma kota");
 
-using (var scope = serviceProvider.CreateScope())
-{
+var logger = serviceProvider.GetService<ILogger<Program>>();
 
-    var outputServices = scope.ServiceProvider.GetServices<IOutputService>();
-    foreach (var service in outputServices)
-    {
-        service.WriteLine("ala ma kota");
-    }
 
-}
+logger.LogDebug("debug");
+logger.LogError("error");
+logger.LogTrace("trace");
+logger.LogInformation("information");
 
-using (var scope = serviceProvider.CreateScope())
-{
-    outputService = scope.ServiceProvider.GetService<IOutputService>();
-    outputService?.WriteLine("ala ma kota");
-}
+serviceProvider.GetService<LoggerDemo>().Work();
 
+Console.ReadLine();
 
 
 static void dotNet6(string[] args)
@@ -130,5 +132,29 @@ static void Configuration()
         Console.WriteLine($"Hello from {configuration["HelloXml"]}");
 
         Console.ReadLine();
+    }
+}
+
+static void DependencyInjection(IServiceProvider serviceProvider)
+{
+    IOutputService? outputService = serviceProvider.GetService<IOutputService>();
+    //outputService = serviceProvider.GetRequiredService<IOutputService>();
+    outputService?.WriteLine("ala ma kota");
+
+    using (var scope = serviceProvider.CreateScope())
+    {
+
+        var outputServices = scope.ServiceProvider.GetServices<IOutputService>();
+        foreach (var service in outputServices)
+        {
+            service.WriteLine("ala ma kota");
+        }
+
+    }
+
+    using (var scope = serviceProvider.CreateScope())
+    {
+        outputService = scope.ServiceProvider.GetService<IOutputService>();
+        outputService?.WriteLine("ala ma kota");
     }
 }

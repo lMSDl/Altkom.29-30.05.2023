@@ -8,5 +8,21 @@
             "To": "Eric"
         }
     },
-    "Number": 5
+    "Number": 5,
+    "Logging": {
+        "LogLevel": {
+            "Default": "error"
+        },
+        "Console": {
+            "LogLevel": {
+                "Default": "debug"
+            },
+            "IncludeScopes": true
+        },
+        "EventLog": {
+            "LogLevel": {
+                "Default": "trace"
+            }
+        }
+        }
 }
