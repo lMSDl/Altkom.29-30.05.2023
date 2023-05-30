@@ -29,10 +29,27 @@ namespace WebAppOld
                 app.UseDeveloperExceptionPage();
             }
 
+
+            app.Use(async (context, next) =>
+            {
+                await next();
+            });
+
             app.UseRouting();
+
+
+            app.Use(async (context, next) =>
+            {
+                await next();
+            });
+
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGet("/demo/hello", async context =>
+                {
+                    await context.Response.WriteAsync("Hello demo!");
+                });
                 endpoints.MapGet("/", async context =>
                 {
                     throw new Exception();
